@@ -1,13 +1,16 @@
 use std::{
     fs, io::{prelude::*, BufReader}, net::{TcpListener, TcpStream}, thread, time::Duration
 };
+use rust_webserver::ThreadPool;
 
 fn main() {
     let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
+    let pool = ThreadPool::new(5);
+
     for stream in listener.incoming() {
         let stream = stream.unwrap();
         
-        thread::spawn(move || {
+        pool.execute(move || {
             handle_connection(stream); 
         });
     }
@@ -17,7 +20,6 @@ fn handle_connection(mut stream: TcpStream) {
     let buf_reader = BufReader::new(&stream);
     // If I use the as_str() method in the following line, I get an error.
     let request_line = buf_reader.lines().next().unwrap().unwrap();
-    println!("The request line is {:#?}", request_line);
 
     let (status_line, filename) = match request_line.as_str() {
         "GET / HTTP/1.1" => {
