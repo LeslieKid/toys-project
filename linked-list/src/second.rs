@@ -100,8 +100,6 @@ impl<'a, T> Iterator for IterMut<'a, T> {
 
 #[cfg(test)]
 mod test {
-    use std::collections::btree_map::IterMut;
-
     use super::List;
 
     #[test]
