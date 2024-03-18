@@ -2,11 +2,11 @@ type Link<T> = Option<Box<Node<T>>>;
 
 struct Node<T> {
     elem: T,
-    next: Link<T> 
+    next: Link<T>,
 }
 
 pub struct List<T> {
-    head: Link<T> 
+    head: Link<T>,
 }
 
 impl<T> List<T> {
@@ -17,22 +17,20 @@ impl<T> List<T> {
     pub fn push(&mut self, elem: T) {
         let new_node = Node {
             elem,
-            next: self.head.take() 
+            next: self.head.take(),
         };
-        self.head = Some(Box::new(new_node)); 
+        self.head = Some(Box::new(new_node));
     }
 
     pub fn pop(&mut self) -> Option<T> {
         self.head.take().map(|node| {
             self.head = node.next;
-            node.elem 
+            node.elem
         })
     }
 
     pub fn peek(&self) -> Option<&T> {
-        self.head.as_ref().map(|node| {
-            &node.elem
-        })
+        self.head.as_ref().map(|node| &node.elem)
     }
 
     pub fn into_iter(self) -> IntoIter<T> {
@@ -40,13 +38,16 @@ impl<T> List<T> {
     }
 
     pub fn iter(&self) -> Iter<T> {
-        Iter{ next: self.head.as_deref().map(|node| { &*node }) }
+        Iter {
+            next: self.head.as_deref().map(|node| &*node),
+        }
     }
 
     pub fn iter_mut(&mut self) -> IterMut<T> {
-        IterMut{ next: self.head.as_deref_mut() }
+        IterMut {
+            next: self.head.as_deref_mut(),
+        }
     }
-
 }
 
 impl<T> Drop for List<T> {
@@ -71,7 +72,7 @@ impl<T> Iterator for IntoIter<T> {
 
 /// The concept of lifetime in Rust makes me crazy.
 pub struct Iter<'a, T> {
-    next: Option<&'a Node<T>>
+    next: Option<&'a Node<T>>,
 }
 
 impl<'a, T> Iterator for Iter<'a, T> {
@@ -85,7 +86,7 @@ impl<'a, T> Iterator for Iter<'a, T> {
 }
 
 pub struct IterMut<'a, T> {
-    next: Option<&'a mut Node<T>>
+    next: Option<&'a mut Node<T>>,
 }
 
 impl<'a, T> Iterator for IterMut<'a, T> {
@@ -106,7 +107,7 @@ mod test {
     fn basic() {
         let mut list = List::new();
         assert_eq!(list.pop(), None);
-        
+
         list.push(1.1);
         list.push(2.1);
         list.push(3.1);
@@ -149,7 +150,7 @@ mod test {
         list.push(3);
 
         let mut iter = list.iter();
-        assert_eq!(iter.next(), Some(&3)); 
+        assert_eq!(iter.next(), Some(&3));
         assert_eq!(iter.next(), Some(&2));
         assert_eq!(iter.next(), Some(&1));
     }
@@ -162,7 +163,7 @@ mod test {
         list.push(3);
 
         let mut iter_mut = list.iter_mut();
-        assert_eq!(iter_mut.next(), Some(&mut 3)); 
+        assert_eq!(iter_mut.next(), Some(&mut 3));
         assert_eq!(iter_mut.next(), Some(&mut 2));
         assert_eq!(iter_mut.next(), Some(&mut 1));
     }

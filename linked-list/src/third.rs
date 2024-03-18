@@ -4,11 +4,11 @@ type Link<T> = Option<Rc<Node<T>>>;
 
 pub struct Node<T> {
     elem: T,
-    next: Link<T> 
+    next: Link<T>,
 }
 
 pub struct List<T> {
-    head: Link<T>
+    head: Link<T>,
 }
 
 impl<T> List<T> {
@@ -20,39 +20,41 @@ impl<T> List<T> {
         List {
             head: Some(Rc::new(Node {
                 elem,
-                next: self.head.clone() 
-            }))
-        } 
+                next: self.head.clone(),
+            })),
+        }
     }
 
     pub fn tail(&self) -> List<T> {
-        List { head: self.head.as_ref().and_then(|node| node.next.clone()) }
+        List {
+            head: self.head.as_ref().and_then(|node| node.next.clone()),
+        }
     }
 
     pub fn head(&self) -> Option<&T> {
-        self.head.as_ref().map(|node| &node.elem) 
+        self.head.as_ref().map(|node| &node.elem)
     }
 
     pub fn iter(&self) -> Iter<T> {
-        Iter { next: self.head.as_deref() }
+        Iter {
+            next: self.head.as_deref(),
+        }
     }
-
 }
 
 pub struct Iter<'a, T> {
-    next: Option<&'a Node<T>>
+    next: Option<&'a Node<T>>,
 }
 
 impl<'a, T> Iterator for Iter<'a, T> {
     type Item = &'a T;
     fn next(&mut self) -> Option<Self::Item> {
         self.next.map(|node| {
-            self.next = node.next.as_deref(); 
+            self.next = node.next.as_deref();
             &node.elem
         })
-    }    
+    }
 }
-
 
 #[cfg(test)]
 mod test {
@@ -78,7 +80,6 @@ mod test {
         // Make sure empty tail works
         let list = list.tail();
         assert_eq!(list.head(), None);
-
     }
 
     #[test]
@@ -90,5 +91,4 @@ mod test {
         assert_eq!(iter.next(), Some(&2));
         assert_eq!(iter.next(), Some(&1));
     }
-
 }

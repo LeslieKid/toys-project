@@ -1,12 +1,12 @@
-use std::rc::Rc;
 use std::cell::RefCell;
+use std::rc::Rc;
 
 type Link<T> = Option<Rc<RefCell<Node<T>>>>;
 
 pub struct Node<T> {
     elem: T,
     prev: Link<T>,
-    next: Link<T>
+    next: Link<T>,
 }
 
 impl<T> Node<T> {
@@ -21,12 +21,15 @@ impl<T> Node<T> {
 
 pub struct List<T> {
     head: Link<T>,
-    tail: Link<T>
+    tail: Link<T>,
 }
 
 impl<T> List<T> {
     pub fn new() -> Self {
-        List { head: None, tail: None}
+        List {
+            head: None,
+            tail: None,
+        }
     }
 
     pub fn push_front(&mut self, elem: T) {
@@ -40,8 +43,8 @@ impl<T> List<T> {
             None => {
                 self.head = Some(new_head.clone());
                 self.tail = Some(new_head);
-            } 
-        }       
+            }
+        }
     }
 
     pub fn push_back(&mut self, elem: T) {
@@ -56,7 +59,7 @@ impl<T> List<T> {
                 self.head = Some(new_node.clone());
                 self.tail = Some(new_node);
             }
-        } 
+        }
     }
 
     pub fn pop_front(&mut self) -> Option<T> {
@@ -80,7 +83,7 @@ impl<T> List<T> {
             match old_tail.borrow_mut().prev.take() {
                 Some(new_tail) => {
                     new_tail.borrow_mut().next.take();
-                    self.tail = Some(new_tail);  
+                    self.tail = Some(new_tail);
                 }
                 None => {
                     self.head = None;
@@ -92,7 +95,6 @@ impl<T> List<T> {
     }
 }
 
-
 #[cfg(test)]
 mod test {
     use super::List;
@@ -103,11 +105,11 @@ mod test {
 
         assert_eq!(list.pop_back(), None);
         assert_eq!(list.pop_front(), None);
-        
+
         list.push_front(1);
         list.push_front(2);
         list.push_back(3);
-        
+
         assert_eq!(list.pop_front(), Some(2));
         assert_eq!(list.pop_back(), Some(3));
         assert_eq!(list.pop_back(), Some(1));

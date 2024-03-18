@@ -1,7 +1,7 @@
 use std::mem;
 
 pub struct List {
-    head: Link 
+    head: Link,
 }
 
 impl List {
@@ -12,17 +12,17 @@ impl List {
     pub fn push(&mut self, elem: i32) {
         let new_node = Node {
             elem,
-            next: mem::replace(&mut self.head, Link::Empty)
+            next: mem::replace(&mut self.head, Link::Empty),
         };
-        self.head = Link::Element(Box::new(new_node)); 
+        self.head = Link::Element(Box::new(new_node));
     }
 
     pub fn pop(&mut self) -> Option<i32> {
         match mem::replace(&mut self.head, Link::Empty) {
-            Link::Empty => None, 
+            Link::Empty => None,
             Link::Element(node) => {
-                let elem = node.elem; 
-                self.head = node.next; 
+                let elem = node.elem;
+                self.head = node.next;
                 Some(elem)
             }
         }
@@ -40,12 +40,12 @@ impl Drop for List {
 
 enum Link {
     Empty,
-    Element(Box<Node>)
+    Element(Box<Node>),
 }
 
 struct Node {
     elem: i32,
-    next: Link 
+    next: Link,
 }
 
 #[cfg(test)]
@@ -56,7 +56,7 @@ mod test {
     fn basic() {
         let mut list = List::new();
         assert_eq!(list.pop(), None);
-        
+
         list.push(1);
         list.push(2);
         list.push(3);
